@@ -3,7 +3,7 @@ import './CSS/whiteBtn.css';
 function WhiteButton(props) {
     return (
         <div>
-            <button className="whiteBtn">{props.buttonText}</button>
+            <button className="whiteBtn" onClick={props.click}>{props.buttonText}</button>
         </div>
     )
 }

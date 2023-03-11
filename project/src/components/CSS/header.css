@@ -10,12 +10,21 @@
   top: 30px;
   left: 30px;
 }
-.header > div {
+.header-buttons {
   display: flex;
   position: absolute;
   top: 30px;
   right: 30px;
 }
-.header > div > * {
+.header-buttons > * {
   padding: 0px 10px 0px 10px;
+}
+@media only screen and (max-width: 456px) {
+  .header > div {
+    display: none;
+  }
+  .header-buttons {
+    display: flex;
+    flex-direction: column;
+  }
 }

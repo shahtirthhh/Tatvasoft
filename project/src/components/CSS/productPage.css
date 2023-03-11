@@ -1,0 +1,62 @@
+* {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+.product-page-heading {
+  display: flex;
+  justify-content: center;
+  margin: 50px 0px 50px 0px;
+  padding: 25px 0px 25px 0px;
+  cursor: default;
+}
+.product-page-heading > span {
+  font-size: 32px;
+  color: #414141;
+  font-weight: bolder;
+}
+.product-page-search {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin: 45px 100px 32px 0px;
+  flex-wrap: wrap;
+}
+.product-page-search > input {
+  margin-right: 15px;
+}
+.product-page-main-container {
+  margin: 0.2vw 3vw 0.2vw 3vw;
+  padding: 0.2vw 3vw 0.2vw 3vw;
+}
+.product-page-table-head {
+  display: flex;
+}
+.product-page-td {
+  width: 65px;
+  justify-content: center;
+  display: flex;
+  margin: 1vw 0.5vw 0.2vw 10vw;
+  font-size: 18px;
+  color: #212121;
+  font-weight: bold;
+}
+.product-page-product-row {
+  border-bottom: 1px solid #8a8a8a;
+  margin-top: 1vw;
+}
+.product-page-product-data {
+  margin: 1vw 0.5vw 0.2vw 9vw;
+  display: inline-block;
+}
+.product-page-button-container > * {
+  margin-left: 5px;
+}
+.product-page-pagination-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin: 2vw 4vw 0.2vw 1vw;
+}
+.product-page-pagination-box > * {
+  margin-left: 1vw;
+}

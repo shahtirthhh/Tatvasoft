@@ -15,3 +15,16 @@
   transition: all 0.2s ease-in-out;
   transform: scale(0.95);
 }
+.page-change-btn {
+  border: none;
+  background: white;
+  font-size: 20px;
+  font-weight: bolder;
+  padding-bottom: 0.7vw;
+  transition: all 0.2s;
+}
+.page-change-btn:hover {
+  cursor: pointer;
+  color: #f14d54;
+  transition: all 0.2s;
+}

@@ -1,9 +1,48 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../CSS/login.css';
 import '../UI/CSS/textBox.css';
 import RedButton from '../UI/RedButton';
 const Login = (props) => {
+    const [email, setEmail] = useState('')
+    const [emailVal, setEmailVal] = useState(0)
 
+    const [password, setPassword] = useState('')
+    const [pwVal, setPwVal] = useState(0)
+
+    const [formVal, setFormVal] = useState(0)
+    useEffect(() => {
+        setFormVal(0)
+    }, [])
+    useEffect(() => {
+        if (email.trim().length < 0) {
+            setEmailVal(0)
+            setFormVal(0)
+        } else {
+            setEmailVal(1)
+        }
+        if (!email.includes("@")) {
+            setEmailVal(0)
+            setFormVal(0)
+        }
+        else {
+            setEmailVal(1)
+        }
+    }, [email])
+    useEffect(() => {
+        if (password.trim().length < 1) {
+            setPwVal(0)
+            setFormVal(0)
+        } else {
+            setPwVal(1)
+        }
+    }, [password])
+    useEffect(() => {
+        if (emailVal == true && pwVal == true) {
+            setFormVal(1)
+        } else {
+            setFormVal(0)
+        }
+    }, [emailVal, pwVal])
     return (
         <>
             <div className='login-login-heading'>
@@ -30,14 +69,14 @@ const Login = (props) => {
                         {/* ->>>>>>>>> Email section */}
                         <div className='login-sub-holder'>
                             <label className='login-form-label' for="email">Email Address</label>
-                            <input type="text" className='textBox' id='email'></input>
+                            <input onChange={e => setEmail(e.target.value)} type="text" className={emailVal ? 'textBox' : 'textBox red-textBox'} id='email'></input>
                         </div>
                         <div className='login-sub-holder'>
                             <label className='login-form-label' for="password">Password</label>
-                            <input type="password" className='textBox' id='password'></input>
+                            <input onChange={e => setPassword(e.target.value)} type="password" className={pwVal ? 'textBox' : 'textBox red-textBox'} id='password'></input>
                         </div>
                         <div className='login-sub-holder'>
-                            <RedButton buttonText='Login' />
+                            {formVal ? <RedButton buttonText='Login' /> : <h4 style={{ color: "#f14d54" }}>Invalid Details</h4>}
                         </div>
                     </form>
                 </div>

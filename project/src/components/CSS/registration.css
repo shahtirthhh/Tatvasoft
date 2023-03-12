@@ -1,4 +1,5 @@
 .reg-container {
+  padding: 1vw 5vw 4vw 5vw;
   margin: 0px 25px 0px 25px;
 }
 .reg-login-heading {
@@ -12,6 +13,10 @@
   font-size: 32px;
   color: #414141;
   font-weight: bolder;
+}
+.reg-sub-heading {
+  padding: 1vw 1vw 1vw 1.45vw;
+  /* margin-left: 1.5vw; */
 }
 .reg-info {
   font-size: 20px;
@@ -51,5 +56,5 @@
   margin-bottom: 50px;
 }
 #reg-login {
-  margin-top: 70px;
+  margin: 5vw 0vw 0vw -2vw;
 }

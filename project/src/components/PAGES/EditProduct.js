@@ -1,0 +1,210 @@
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
+import { bookActions } from '../../redux-store/books-slice';
+// admin@tatvasoft.com
+// admin@123
+import '../CSS/editProduct.css';
+import '../UI/CSS/textBox.css';
+import '../UI/CSS/redBtn.css';
+import '../UI/CSS/greenBtn.css';
+import Spinner from '../UI/Spinner';
+import { toast } from 'react-toastify';
+
+function EditProduct({ baseUrl }) {
+    const auth = useSelector(state => state.auth.auth);
+    const navigate = useNavigate();
+    if (!auth) {
+        navigate('/login');
+    }
+    const [isLoading, setLoading] = useState(false);
+    const [categories, setCategories] = useState([]);
+    const dispatch = useDispatch();
+    const products = useSelector(state => state.books.books)
+    const { product_id } = useParams()
+    const prod_index = (products.findIndex((product) => product.id == product_id))
+    let my_product = products[prod_index]// const my_product = 
+    useEffect(() => {
+        setLoading(true)
+        axios.get(`${baseUrl}/api/category/all`)
+            .then(result => {
+                setLoading(false)
+                if (result) {
+                    return result.data
+                }
+            })
+            .then(data => {
+                setCategories(data.result)
+            })
+            .catch(err => {
+                setLoading(false)
+                toast.error(err.response.data.error);
+            })
+    }, [])
+    const update_redux_book_state = () => {
+        axios.get(`${baseUrl}/api/book/all`)
+            .then(result => {
+                setLoading(false)
+                if (result) {
+                    return result.data
+                }
+            })
+            .then(data => {
+                dispatch(bookActions.updateBookState({ books: data.result }))
+            })
+            .catch(err => {
+                setLoading(false)
+                toast.error(err.response.data.error);
+            })
+    }
+    const [name, setName] = useState(my_product.name)
+    const [nameVal, changeNameVal] = useState(false)
+
+    const [price, setPrice] = useState(my_product.price)
+    const [priceVal, changePriceVal] = useState(false)
+
+    const [category, setCategory] = useState(my_product.categoryId)
+    const [categoryVal, changeCategoryVal] = useState(false)
+
+    const [desc, setDesc] = useState(my_product.description)
+    const [descVal, changeDescVal] = useState(false)
+
+    const [file, changeFile] = useState(null);
+
+    const [formVal, changeFormVal] = useState(false)
+    const submitEditedHandler = (e) => {
+        e.preventDefault();
+        // const reader = new FileReader();
+        // if(file){
+        //     reader.readAsDataURL(file);
+        // }
+        const update = {
+            id: my_product.id,
+            name: name,
+            description: desc,
+            price: price,
+            categoryId: category,
+            base64image: file || my_product.base64image
+        }
+        // reader.onloadend = function () {
+        //     update.base64image = reader.result
+        // }
+        update_product(update);
+    }
+    const update_product = (formData) => {
+        setLoading(true)
+        // console.log(formData)
+        axios.put(`${baseUrl}/api/book`, formData)
+            .then(result => {
+                return result.data
+            }).then(data => {
+                update_redux_book_state();
+                toast.success("Updated successfully");
+                navigate('/product-page')
+            })
+            .catch(err => {
+                setLoading(false)
+                toast.error("Can't update ! Server error");
+            })
+    }
+    useEffect(() => {
+        if (nameVal && priceVal && descVal && categoryVal) {
+            changeFormVal(true)
+        }
+        else {
+            changeFormVal(false)
+        }
+    }, [nameVal, priceVal, descVal, categoryVal])
+
+    useEffect(() => {
+        if (price <= 0) {
+            changePriceVal(false)
+            changeFormVal(false)
+        } else {
+            changePriceVal(true)
+        }
+    }, [price])
+    useEffect(() => {
+        if (desc.trim().length < 1) {
+            changeDescVal(false)
+            changeDescVal(false)
+        } else {
+            changeDescVal(true)
+        }
+    }, [desc])
+    useEffect(() => {
+        if (name.trim().length < 4) {
+            changeNameVal(false)
+            changeFormVal(false)
+        } else {
+            changeNameVal(true)
+        }
+    }, [name])
+    useEffect(() => {
+        if (category == -1) {
+            changeCategoryVal(false)
+            changeFormVal(false)
+        } else {
+            changeCategoryVal(true)
+        }
+    }, [category])
+
+    return (
+        <>
+            {isLoading ? <Spinner /> : <></>}
+            <div className='edit-product-heading'>
+                <span>Edit Product</span>
+            </div>
+            <div className='reg-container'>
+                <div className='reg-login-container'>
+                    <form className='reg-login-form'>
+                        <div className='reg-holder'>
+                            {/* ->>>>>>>>> First Name section */}
+                            <div className='reg-sub-holder'>
+                                <label className='reg-form-label' htmlFor="name">Name</label>
+                                <input type="text" id='name' defaultValue={name} className={nameVal ? 'textBox' : 'textBox red-textBox'} onChange={(e) => setName(e.target.value)} ></input>
+                            </div>
+                            {/* ->>>>>>>>> Last Name section */}
+                            <div className='reg-sub-holder'>
+                                <label className='reg-form-label' htmlFor="price">Price</label>
+                                <input type="number" min={5} defaultValue={price} onChange={(e) => setPrice(e.target.value)} id='price' className={priceVal ? 'textBox' : 'textBox red-textBox'}></input>
+                            </div>
+                        </div>
+                        <div className='reg-holder'>
+                            {/* ->>>>>>>>> Categories section */}
+                            <div className='reg-sub-holder'>
+                                <label className='reg-form-label' htmlFor="category">Shop By Categories</label>
+                                <select className='textBox' id="category" value={category} onChange={e => setCategory(e.target.value)}>
+                                    {categories.map(cate => {
+                                        return (
+                                            <option key={cate.id} value={cate.id}>{cate.name}</option>
+                                        )
+                                    })}
+                                </select>
+                            </div>
+                            {/* ->>>>>>>>>Description section */}
+                            <div className='reg-sub-holder'>
+                                <label className='reg-form-label' htmFor="desc">Description</label>
+                                <textarea rows="4" cols="50" maxLength={80} style={{ resize: "none" }} defaultValue={desc} onChange={(e) => setDesc(e.target.value)} id='desc' className={descVal ? 'textBox' : 'textBox red-textBox'} />
+                            </div>
+                        </div>
+                        <div className='reg-holder'>
+                            {/* ->>>>>>>>> File upload section */}
+                            <div className='reg-sub-holder'>
+                                <input type='file' id='file-upload' onChange={e => changeFile(e.target.files[0])}></input> {!file && <img style={{ width: "80px", height: "80px" }} src={my_product.base64image} />}
+                            </div>
+                        </div>
+                        <div className='reg-holder'>
+                            <button disabled={!formVal} type='submit' className={formVal ? 'greenBtn' : 'disabledBtn'} onClick={e => submitEditedHandler(e)}>Save</button>
+                            <Link to='/product-page'><button style={{ margin: "0vw 1.7vw 0vw 1vw" }} className='redBtn'>Cancel</button></Link>
+                        </div>
+                    </form>
+                </div >
+            </div >
+            <hr></hr>
+        </>
+    )
+}
+
+export default EditProduct

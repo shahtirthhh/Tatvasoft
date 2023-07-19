@@ -8,7 +8,9 @@
   margin: 50px 0px 50px 0px;
   padding: 25px 0px 25px 0px;
   cursor: default;
+  background-color: #d9d9d972;
 }
+
 .reg-login-heading > span {
   font-size: 32px;
   color: #414141;
@@ -44,6 +46,7 @@
   margin: 25px 25px 0px 0px;
 }
 .reg-form-label {
+  margin: 0px 0px 7px 15px;
   font-size: 15px;
 }
 .reg-form-label::after {
@@ -57,4 +60,11 @@
 }
 #reg-login {
   margin: 5vw 0vw 0vw -2vw;
+}
+.reg-p {
+  font-size: 12px;
+  color: brown;
+}
+.reg-sub-holder p {
+  margin: 7px 0px 0px 15px;
 }

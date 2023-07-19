@@ -7,16 +7,28 @@
   transition: all 0.2s ease-in-out;
   padding-left: 5px;
 }
-.textBox:hover {
+.textBox-book-listing-search {
+  width: 10vw;
+  height: 40px;
+  border: 1px solid rgb(33, 33, 33);
+  color: rgb(33, 33, 33);
+  border-radius: 2px;
+  transition: all 0.2s ease-in-out;
+  padding-left: 5px;
+}
+.textBox,
+.textBox-book-listing-search:hover {
   cursor: pointer;
   background-color: rgb(240, 239, 239);
   transition: all 0.2s ease-in-out;
 }
-.textBox:active {
+.textBox,
+.textBox-book-listing-search:active {
   transition: all 0.2s ease-in-out;
   transform: scale(0.95);
 }
-.textBox:focus {
+.textBox,
+.textBox-book-listing-search:focus {
   border: 2px solid black;
 }
 .red-textBox {

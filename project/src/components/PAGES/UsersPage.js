@@ -5,26 +5,32 @@ import '../UI/CSS/linkBtn.css';
 // import Header from '../SECTIONS/Header';
 // import Footer from '../SECTIONS/Footer';
 import Spinner from '../UI/Spinner';
-import { bookActions } from '../../redux-store/books-slice';
 
 import RedButton from '../UI/RedButton';
-import Product from './Product';
+import User from './User';
+
 import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
-function ProductPage({ baseUrl }) {
+import { userActions } from '../../redux-store/users-slice';
+export default function UsersPage({ baseUrl }) {
     const auth = useSelector(state => state.auth.auth);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
-    if (!auth) {
-        navigate('/login');
-    }
+    // if (!auth) {
+    //     navigate('/login');
+    // }
     const [isLoading, setLoading] = useState(false);
-    const [displayedProducts, changeDisplayProduct] = useState([]);
-    const dispatch = useDispatch()
+    const users = useSelector(state => state.users.users)
+    // console.log(users)
+    let [currentProducts, changeCurrentProducts] = useState(users.slice(0, 5))
+    let [currentPage, changeCurrentPage] = useState(1);
+    let [rowsPerPage, changeRowsPerPage] = useState(5);
+
     useEffect(() => {
         setLoading(true)
-        axios.get(`${baseUrl}/api/book/all`)
+        axios.get(`${baseUrl}/api/user?pageSize=${rowsPerPage}&pageIndex=${currentPage}`)
             .then(result => {
                 setLoading(false)
                 if (result) {
@@ -32,19 +38,15 @@ function ProductPage({ baseUrl }) {
                 }
             })
             .then(data => {
-                dispatch(bookActions.updateBookState({ books: data.result }))
-                changeDisplayProduct(data.result)
+                dispatch(userActions.updateUserState({ users: data.result.items }));
+                setLoading(false)
             })
             .catch(err => {
                 setLoading(false)
+                console.log(err)
                 toast.error(err.response.data.error);
             })
-    }, [])
-    const products = useSelector(state => state.books.books);
-
-    let [currentProducts, changeCurrentProducts] = useState(products.slice(0, 5))
-    let [currentPage, changeCurrentPage] = useState(1);
-    let [rowsPerPage, changeRowsPerPage] = useState(5);
+    }, [currentPage, rowsPerPage])
     useEffect(() => {
         if (rowsPerPage >= 10 || rowsPerPage <= 3) {
             changeRowsPerPage(3);
@@ -54,8 +56,8 @@ function ProductPage({ baseUrl }) {
     useEffect(() => {
         var lastProductIndex = currentPage * rowsPerPage;
         var firstProductIndex = lastProductIndex - rowsPerPage;
-        changeCurrentProducts(products.slice(firstProductIndex, lastProductIndex))
-    }, [currentPage, rowsPerPage, products])
+        changeCurrentProducts(users.slice(firstProductIndex, lastProductIndex))
+    }, [currentPage, rowsPerPage, users])
     function prevPageHandler() {
         if (currentPage === 1) {
             changeCurrentPage(1);
@@ -65,46 +67,58 @@ function ProductPage({ baseUrl }) {
         }
     }
     function nextPageHandler() {
-        if (currentPage > Math.floor(products.length / rowsPerPage)) {
-            changeCurrentPage(1)
-        }
-        else {
-            changeCurrentPage(currentPage + 1)
-        }
+        changeCurrentPage(currentPage + 1)
     }
     const searchHandler = (e) => {
-        let temp = products.filter(product => product.name.toLowerCase().includes(e.target.value));
-        changeCurrentProducts(temp)
+        if (e.target.value.trim().length % 4 == 0 && e.target.value.length != 0) {
+            setLoading(true)
+            axios.get(`${baseUrl}/api/user?pageSize=${rowsPerPage}&pageIndex=${currentPage}&keyword=${e.target.value}`)
+                .then(result => {
+                    setLoading(false)
+                    if (result) {
+                        return result.data
+                    }
+                })
+                .then(data => {
+                    dispatch(userActions.updateUserState({ users: data.result.items }));
+                    setLoading(false)
+                })
+                .catch(err => {
+                    setLoading(false)
+                    // console.log(err)
+                    toast.error(err.response.data.error);
+                })
+        } else {
+            //notting
+        }
     }
-
     return (
         <>
             {/* <Header /> */}
             {isLoading ? <Spinner /> : <></>}
             <div className='product-page-heading'>
-                <span>Product Page</span>
+                <span>Users Page</span>
             </div>
             <div className='product-page-search'>
-                <input type="text" placeholder='Search...' onChange={e => searchHandler(e)} className='textBox'></input>
-                <Link to='add-product' ><button className='redBtn'>Add product</button></Link>
+                <input type="text" placeholder='Search by Email' onChange={e => searchHandler(e)} className='textBox'></input>
             </div>
             <div className='product-page-main-container'>
 
                 <table className="table">
                     <thead className="thead-dark" style={{ backgroundColor: "#545455", border: 'none' }}>
                         <tr>
-                            <th scope="col"></th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Price ₹</th>
-                            <th scope="col">Category</th>
+                            <th scope="col">First Name</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Role</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {currentProducts.map((product) => {
+                        {users.map((product) => {
                             return (
                                 <tr key={product._id}>
-                                    <Product product={product} baseUrl={baseUrl} changeLoading={setLoading} />
+                                    <User user={product} baseUrl={baseUrl} changeLoading={setLoading} cp={changeCurrentPage} />
                                 </tr>
                             )
                         })}
@@ -124,5 +138,3 @@ function ProductPage({ baseUrl }) {
         </>
     )
 }
-
-export default ProductPage

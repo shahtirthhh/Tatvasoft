@@ -1,5 +1,6 @@
 .linkBtn {
   font-size: 16px;
+  font-weight: 500;
   max-width: 129px;
   color: #f14d54;
   background: white;
@@ -8,8 +9,11 @@
 }
 .linkBtn:hover {
   cursor: pointer;
-  transform: scale(1.05);
+  /* transform: scale(1.05); */
   transition: all 0.2s ease-in-out;
+  color: #ff7878;
+  text-decoration: none;
+  /* border: 2px solid salmon; */
 }
 .linkBtn:active {
   transition: all 0.2s ease-in-out;
